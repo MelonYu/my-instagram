@@ -36,7 +36,7 @@ class Image(db.Model):
     url = db.Column(db.String(512))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     create_date = db.Column(db.DateTime)
-    comment = db.relationship('Comment')
+    comments = db.relationship('Comment')
 
     def __init__(self, url, user_id):
         self.url = url
@@ -51,7 +51,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(32))
     head_url = db.Column(db.String(256))
-    images = db.relationship('Image')
+    images = db.relationship('Image', backref='user', lazy='dynamic')
 
     def __init__(self, username, password):
         self.username = username
