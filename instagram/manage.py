@@ -26,11 +26,11 @@ def get_image_url():
 def init_database():
     db.drop_all()
     db.create_all()
-    for i in range(0, 100):
+    for i in range(0, 20):
         db.session.add(User('User' + str(i), 'a' + str(i)))
-        for j in range(0, 3):
+        for j in range(0, 10):
             db.session.add(Image(get_image_url(), i+1))
-            for k in range(0, 3):
+            for k in range(0, 5):
                 db.session.add(Comment('This is a comment ' + str(k), 1+3*i+j, i+1))
     db.session.commit()
 
