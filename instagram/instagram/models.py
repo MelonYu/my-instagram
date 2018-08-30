@@ -10,7 +10,7 @@
 @Time    :   18-8-28 上午11:43
 """
 
-from instagram import db
+from instagram import db, login_manager
 import random
 import datetime
 
@@ -31,6 +31,7 @@ class Comment(db.Model):
     def __repr__(self):
         return '<Comment %d %s>' % (self.id, self.content)
 
+
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.String(512))
@@ -46,17 +47,40 @@ class Image(db.Model):
     def __repr__(self):
         return '<Image %d %s>' % (self.id, self.url)
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(32))
+    salt = db.Column(db.String(32))
     head_url = db.Column(db.String(256))
     images = db.relationship('Image', backref='user', lazy='dynamic')
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, salt=''):
         self.username = username
         self.password = password
+        self.salt = salt
         self.head_url = 'http://images.nowcoder.com/head/'+ str(random.randint(0,1000)) +'m.png'
 
     def __repr__(self):
         return '<User %d %s>' %(self.id, self.username)
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
