@@ -32,6 +32,7 @@ def index():
 @app.route('/index/images/<int:page>/<int:per_page>/')
 def index_images(page, per_page):
     paginate = Image.query.order_by(db.desc(Image.id)).paginate(page=page, per_page=per_page, error_out=False)
+    print(paginate)
     img_lists = {'has_next': paginate.has_next}
     images = []
     for img in paginate.items:
